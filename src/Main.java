@@ -4,7 +4,7 @@ public class Main {
         Sport boxing = new  Sport("Boxing",false);
 
         Athlete a1 = new Athlete("Yersultan",17,football);
-        Athlete a2 = new Athlete("Rauan",18,boxing);
+        Athlete a2 = new Athlete("Rayana",18,boxing);
         Athlete a3 = new Athlete("Miras",19,football);
 
         Athlete[] athletes = {a1,a2,a3};

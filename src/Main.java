@@ -15,8 +15,10 @@ public class Main {
         club.printAllAthletes();
 
         System.out.println("\nOldest athlete");
-        Athlete oldest = club.findOldestAthlete();
-        oldest.printInfo();
+        club.findOldestAthlete().printInfo();
+
+        System.out.println();
+        club.printTeamSportAthletes();
     }
 
 }

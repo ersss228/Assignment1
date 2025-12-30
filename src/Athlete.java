@@ -1,38 +1,29 @@
-public class Athlete {
-    private String name;
-    private int age;
+public class Athlete extends Person {
     private Sport sport;
 
     public Athlete(String name, int age, Sport sport) {
-        this.name = name;
-        this.age = age;
+        super(name, age);
         this.sport = sport;
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public int getAge() {
-        return age;
     }
     public Sport getSport() {
         return sport;
     }
-    public void setSport(Sport sport) {
-        this.sport = sport;
-    }
-    public void printSport(){
-        System.out.println(name+" "+age+" "+sport);
-    }
-    public void printInfo(){
-        System.out.println(name+" "+age+" "+sport);
+
+    @Override
+    public void printInfo() {
+        System.out.println(name + " " + age + " " + sport);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Athlete athlete = (Athlete) o;
+        return age == athlete.age && name.equals(athlete.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode() + age;
+    }
 }

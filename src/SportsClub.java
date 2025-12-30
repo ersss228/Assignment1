@@ -6,26 +6,29 @@ public class SportsClub {
        this.clubName=clubName;
        this.athletes=athletes;
     }
-    public String getClubName() {
-        return clubName;
-    }
-    public Athlete[] getAthletes() {
-        return athletes;
-    }
     public void printAllAthletes(){
         System.out.println("SportsClub:" + clubName);
-        for (int i = 0; i<athletes.length; i++){
-            athletes[i].printInfo();
+        for (Athlete athlete : athletes){
+            athlete.printInfo();
         }
     }
     public Athlete findOldestAthlete(){
         Athlete oldest =  athletes[0];
-        for (int i = 1; i<athletes.length; i++){
-            if(athletes[i].getAge() > oldest.getAge()){
-                oldest=athletes[i];
+        for (Athlete athlete : athletes){
+            if(athlete.getAge() > oldest.getAge()){
+                oldest=athlete;
             }
         }
         return oldest;
+    }
+
+    public void printTeamSportAthletes(){
+        System.out.println("Team sport athletes:");
+        for (Athlete athlete : athletes){
+            if (athlete.getSport().isTeamSport()){
+                athlete.printInfo();
+            }
+        }
     }
 
 }

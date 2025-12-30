@@ -6,24 +6,24 @@ public Sport(String name, boolean isTeamSport) {
     this.name = name;
     this.isTeamSport = isTeamSport;
 }
-
-public String getName() {
-    return name;
-}
-public void setName(String name) {
-    this.name = name;
-}
 public boolean isTeamSport() {
     return isTeamSport;
 }
+
+@Override
 public String toString() {
-    String type = isTeamSport ? "Team sport" : "Individual sport" ;
-    return name + " " + type;
+    return name + " (" + (isTeamSport ? "Team sport" : "Individual sport") + ")";
 }
-public void setTeamSport(boolean teamSport) {
-    isTeamSport = teamSport;
+
+@Override
+    public boolean equals (Object o){
+    if (o == this) return true;
+    if (o == null || o.getClass() != this.getClass()) return false;
+    Sport sport = (Sport) o;
+    return name.equals(sport.name);
 }
-public void printSport(){
-    System.out.println(name+" "+isTeamSport);
+@Override
+public int hashCode (){
+    return name.hashCode();
 }
 }

@@ -1,3 +1,8 @@
+package sports.club.management.system.domain;
+
+import java.util.Arrays;
+import java.util.function.Predicate;
+
 public class SportsClub {
     private String clubName;
     private Athlete[] athletes;
@@ -7,7 +12,7 @@ public class SportsClub {
        this.athletes=athletes;
     }
     public void printAllAthletes(){
-        System.out.println("SportsClub:" + clubName);
+        System.out.println("sports.club.management.system.domain.SportsClub:" + clubName);
         for (Athlete athlete : athletes){
             athlete.printInfo();
         }
@@ -29,6 +34,10 @@ public class SportsClub {
                 athlete.printInfo();
             }
         }
+    }
+
+    public void printFilteredAthletes(Predicate<Athlete> condition){
+        Arrays.stream(athletes).filter(condition).forEach(Athlete::printInfo);
     }
 
 }

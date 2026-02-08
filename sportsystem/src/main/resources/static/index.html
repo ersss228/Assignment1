@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sports Club Management</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-main: #0a1628;
+            --bg-card: #111f38;
+            --bg-header: #081223;
+            --accent: #3fa9f5;
+            --accent-soft: #6fc2ff;
+            --text-main: #e6f0ff;
+            --text-muted: #9bb3d3;
+            --danger: #ff5c5c;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: radial-gradient(circle at top, #102544, #060e1b);
+            color: var(--text-main);
+            font-family: "Inter", sans-serif;
+        }
+
+        header {
+            background: var(--bg-header);
+            padding: 25px 50px;
+            font-family: "Montserrat", sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #1e3355;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 14px;
+            padding: 30px;
+            margin-bottom: 35px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+        }
+
+        h2 {
+            margin-top: 0;
+            font-family: "Montserrat", sans-serif;
+            font-weight: 600;
+            color: var(--accent-soft);
+        }
+
+        .form-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"] {
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            width: 240px;
+            font-family: "Inter", sans-serif;
+        }
+
+        label {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        button {
+            padding: 12px 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-family: "Montserrat", sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #2f9cff, #5fb8ff);
+            color: #081223;
+        }
+
+        .btn-edit {
+            background: #2f9cff;
+            color: #081223;
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            font-size: 15px;
+        }
+
+        th {
+            text-align: center;
+            padding: 14px;
+            background: #0b1930;
+            color: var(--accent-soft);
+            font-family: "Montserrat", sans-serif;
+        }
+
+        td {
+            text-align: center;
+            padding: 14px;
+            border-bottom: 1px solid #1e3355;
+        }
+
+        tr:hover {
+            background: #13294b;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            width: 420px;
+            margin: 140px auto;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            font-family: "Montserrat", sans-serif;
+            color: var(--accent-soft);
+        }
+
+    </style>
+</head>
+
+<body>
+
+<header>
+    Sports Club Management System
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>Add new sport</h2>
+        <div class="form-row">
+            <input id="name" placeholder="Sport name">
+            <label>
+                <input type="checkbox" id="team"> Team sport
+            </label>
+            <button class="btn-add" onclick="addSport()">Add</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Sports list</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Team</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="sportsTable"></tbody>
+        </table>
+    </div>
+
+</div>
+
+<footer>
+    © 2026 Sports Club Management System · REST API · PostgreSQL
+</footer>
+
+<!-- Edit Modal -->
+<div class="modal" id="editModal">
+    <div class="modal-content">
+        <h3>Edit sport</h3>
+
+        <input type="hidden" id="editId">
+
+        <input id="editName" placeholder="Sport name" style="width:100%; margin-bottom:15px;">
+        <label>
+            <input type="checkbox" id="editTeam"> Team sport
+        </label>
+
+        <div style="margin-top:20px;">
+            <button class="btn-edit" onclick="updateSport()">Save</button>
+            <button onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API = "/api/sports";
+
+    function loadSports() {
+        fetch(API)
+            .then(r => r.json())
+            .then(data => {
+                const table = document.getElementById("sportsTable");
+                table.innerHTML = "";
+
+                data.forEach(s => {
+                    table.innerHTML += `
+                        <tr>
+                            <td>${s.id}</td>
+                            <td>${s.name}</td>
+                            <td>${s.teamSport}</td>
+                            <td>
+                                <button class="btn-edit" onclick="openEdit(${s.id}, '${s.name}', ${s.teamSport})">Edit</button>
+                                <button class="btn-delete" onclick="deleteSport(${s.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            });
+    }
+
+    function addSport() {
+        const name = document.getElementById("name").value;
+        const teamSport = document.getElementById("team").checked;
+
+        fetch(API, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ name, teamSport })
+        }).then(() => {
+            document.getElementById("name").value = "";
+            document.getElementById("team").checked = false;
+            loadSports();
+        });
+    }
+
+    function deleteSport(id) {
+        if (!confirm("Delete this sport?")) return;
+        fetch(`${API}/${id}`, { method: "DELETE" })
+            .then(loadSports);
+    }
+
+    function openEdit(id, name, team) {
+        document.getElementById("editId").value = id;
+        document.getElementById("editName").value = name;
+        document.getElementById("editTeam").checked = team;
+        document.getElementById("editModal").style.display = "block";
+    }
+
+    function closeModal() {
+        document.getElementById("editModal").style.display = "none";
+    }
+
+    function updateSport() {
+        const id = document.getElementById("editId").value;
+        const name = document.getElementById("editName").value;
+        const teamSport = document.getElementById("editTeam").checked;
+
+        fetch(`${API}/${id}`, {
+            method: "PUT",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ name, teamSport })
+        }).then(() => {
+            closeModal();
+            loadSports();
+        });
+    }
+
+    loadSports();
+</script>
+
+</body>
+</html>
+

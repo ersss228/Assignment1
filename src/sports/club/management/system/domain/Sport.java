@@ -1,3 +1,5 @@
+package sports.club.management.system.domain;
+
 public class Sport {
 private String name;
 private boolean isTeamSport;

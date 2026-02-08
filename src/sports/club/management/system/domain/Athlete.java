@@ -1,3 +1,5 @@
+package sports.club.management.system.domain;
+
 public class Athlete extends Person {
     private Sport sport;
 
@@ -25,5 +27,30 @@ public class Athlete extends Person {
     @Override
     public int hashCode() {
         return name.hashCode() + age;
+    }
+
+    public static class Builder {
+        private String name;
+        private int age;
+        private Sport sport;
+
+        public Builder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder setAge(int age) {
+            this.age = age;
+            return this;
+        }
+
+        public Builder setSport(Sport sport) {
+            this.sport = sport;
+            return this;
+        }
+
+        public Athlete build() {
+            return new Athlete(name, age, sport);
+        }
     }
 }

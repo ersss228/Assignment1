@@ -1,4 +1,6 @@
-public class Person {
+package sports.club.management.system.domain;
+
+public class Person implements Printable {
     protected String name;
     protected int age;
 
@@ -11,7 +13,10 @@ public class Person {
         return age;
     }
 
+    @Override
     public void printInfo() {
+        printTitle();
         System.out.println(name+" "+age);
     }
+
 }
